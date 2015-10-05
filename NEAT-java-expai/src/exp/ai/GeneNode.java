@@ -27,8 +27,8 @@ public class GeneNode {
 	}
 	
 	public double calcValue() {
-		double val = value + bias;
-		return sigmoid(val);
+		value =  sigmoid(value + bias);;
+		return value;
 	}
 	
 	private double sigmoid(double t) {

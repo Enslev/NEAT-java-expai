@@ -10,31 +10,50 @@ public class Demo {
 	public static final double C_3 = 1.0;
 	
 	public static void main(String[] args) {
-		Random rand = new Random();
-		ArrayList<Integer> color = new ArrayList<Integer>();
+		ArrayList<Double> color = new ArrayList<Double>();
 		
 		for (int i = 0; i < 10; i++) {
 			//System.out.println(new Node(i, new Genome(1)).id);
-			Integer x = rand.nextInt(255);
+			//int x = rand.nextInt(255);
+			double x = 100.0/255.0;
 			color.add(x);
 		}
 
+		
+		/* Test
+		 * input0 = input1 = 0,392156
+		 * output1 = 0.8009363507708791
+		 * output2 = 0.688449439880974
+		 * hiddenNode = 0.596802
+		 * 
+		 * (in0, b=0) -[1]-> (out0, b=1)
+		 * (in1, b=0) -[0.5]-> (out1, b=0)
+		 * (in1, b=0) -[1]-> (hidden, b=0)
+		 * (hidden, b=0) -[1]-> (out1, b=0)
+		 * 
+		 */
 		Genome gen1 = new Genome(10);	
-		Genome gen2 = new Genome(10);		
+		//Genome gen2 = new Genome(10);		
 		gen1.addLink(gen1.input.get(0), gen1.output.get(0));
 		//gen2.addLink(gen1.input.get(3), gen1.output.get(0));
-		gen1.addLink(gen1.input.get(1), gen1.output.get(1));
+		GeneLink link = gen1.addLink(gen1.input.get(1), gen1.output.get(1));
 		
 		gen1.links.get(1).weight = 0.5;
-
+		
+		gen1.addNode(link);
+		
+		link.enabled = true;
+		gen1.output.get(0).bias = 1;
+		
+/*
 		ArrayList<GeneNode> out = gen1.run(color);
 
-		//System.out.println(out.get(0).value);
-		//System.out.println(out.get(1).value);
-		
+		System.out.println(out.get(0).value);
+		System.out.println(out.get(1).value);
+*/	
 		//System.out.println(matchGenomes(gen1, gen2));
 		
-		System.out.print(gen1.toString());
+		//System.out.print(gen1.toString());
 
 	}	
 	
