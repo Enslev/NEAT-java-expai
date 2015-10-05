@@ -21,6 +21,20 @@ public class Species {
 		}
 		return fp / genomes.size();
 	}
+	
+	public int size(){
+		return this.genomes.size();
+	}
+	
+	public int fitness(){
+		int sum = 0;
+		
+		for (Genome g : genomes){
+			sum += g.fitness;
+		}
+		
+		return sum / this.size();
+	}
 
 /*
  * We decided not to use this

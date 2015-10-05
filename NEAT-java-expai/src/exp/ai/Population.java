@@ -6,8 +6,15 @@ public class Population {
 	 
 	public ArrayList<Species> species;
 	
-	public Population() {
+	public int size;
+	
+	public Population(int popSize, boolean initialise) {
+		this.size = popSize;
 		species = new ArrayList<Species>();
+	}
+	
+	public int nrOfSpecies(){
+		return this.species.size();
 	}
 
 }

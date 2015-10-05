@@ -44,11 +44,11 @@ public class Genome {
 		
 		for (GeneNode node: input) {
 			double value = node.value;
-			for (GeneLink c: node.output) {
-				c.out.incValue(value * c.weight);
+			for (GeneLink link: node.output) {
+				link.out.incValue(value * link.weight);
 				
-				if (c.out.inputCount >= c.out.input.size()) {
-					queue.add(c.out);
+				if (link.out.inputCount >= link.out.input.size()) {
+					queue.add(link.out);
 				}
 			}
 		}
