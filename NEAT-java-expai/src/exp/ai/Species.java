@@ -6,9 +6,15 @@ public class Species {
 
 	public static final double dtp = 1.0;
 	
+	public static int idCount = 0;
+	public int id;
+	
 	public ArrayList<Genome> genomes;
+	public double fitness;
+	public int nrOffspring;
 	
 	public Species() {
+		this.id = Species.idCount++;
 		genomes = new ArrayList<Genome>();
 	}
 	
@@ -20,6 +26,16 @@ public class Species {
 			fp += g.fitness;
 		}
 		return fp / genomes.size();
+	}
+	
+	public void adjustFitness(){
+		double totalFitness = 0.0;
+		// for each genome, adjust its fitness according to species size
+		for (Genome genome : genomes){
+			genome.adjustedFitness = genome.fitness / ((double) genomes.size());
+			totalFitness += genome.adjustedFitness;
+		}
+		this.fitness = totalFitness;
 	}
 
 /*

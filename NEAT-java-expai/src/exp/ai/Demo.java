@@ -10,31 +10,15 @@ public class Demo {
 	public static final double C_3 = 1.0;
 	
 	public static void main(String[] args) {
-		Random rand = new Random();
-		ArrayList<Integer> color = new ArrayList<Integer>();
 		
-		for (int i = 0; i < 10; i++) {
-			//System.out.println(new Node(i, new Genome(1)).id);
-			Integer x = rand.nextInt(255);
-			color.add(x);
+		Population pop = new Population();
+		// generations
+		for (int i = 0; i < 5; i++){
+			for (Genome genome : pop.){
+				genome.sendThroughNetwork(color);
+			}
+			pop = Algorithm.evolvePopulation(pop);
 		}
-
-		Genome gen1 = new Genome(10, 2);	
-		Genome gen2 = new Genome(10, 2);		
-		gen1.addLink(gen1.input.get(0), gen1.output.get(0));
-		//gen2.addLink(gen1.input.get(3), gen1.output.get(0));
-		gen1.addLink(gen1.input.get(1), gen1.output.get(1));
-		
-		gen1.links.get(1).weight = 0.5;
-
-		ArrayList<GeneNode> out = gen1.sendThroughNetwork(color);
-
-		//System.out.println(out.get(0).value);
-		//System.out.println(out.get(1).value);
-		
-		//System.out.println(matchGenomes(gen1, gen2));
-		
-		System.out.print(gen1.toString());
 
 	}	
 	

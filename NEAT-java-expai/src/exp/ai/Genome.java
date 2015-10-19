@@ -9,14 +9,20 @@ public class Genome {
 	public static final double DEFAULT_WEIGHT = 1.0;
 	public static final double DEFAULT_BIAS = 0.0;
 	
+	public static int idCount = 0;
+	public int id;
+	
 	public ArrayList<GeneNode> input;
 	public ArrayList<GeneNode> output;
 	public ArrayList<GeneNode> hidden;
 	public ArrayList<GeneLink> links;
 	private Queue<GeneNode> queue;
 	public double fitness;
+	public double adjustedFitness;
 	
 	public Genome(int inputSize, int outputSize) {
+		this.id = Genome.idCount++;
+		
 		input = new ArrayList<GeneNode>();
 		output = new ArrayList<GeneNode>();
 		hidden = new ArrayList<GeneNode>();
@@ -24,6 +30,7 @@ public class Genome {
 		queue = new LinkedList<GeneNode>();
 		
 		fitness = 0.0;
+		adjustedFitness = 0.0;
 		
 		for (int i = 0; i < inputSize; i++) {
 			input.add(new GeneNode(DEFAULT_BIAS));
@@ -35,6 +42,7 @@ public class Genome {
 		
 	}
 	
+	// TODO: Remember to reset the entire networks values to 0 afterwards
 	public ArrayList<GeneNode> sendThroughNetwork(ArrayList<Integer> color) {
 		// TODO: should be more flexible, color might change
 		// assign final color values to all input nodes

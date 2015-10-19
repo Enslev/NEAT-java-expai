@@ -14,9 +14,33 @@ public class Algorithm {
 	*/
 	
 	public static Population evolvePopulation(Population pop){
+		// save the current population maybe?
+		
 		// new population
+		Population newPop = new Population(pop.size);
 		
+		// calc adjusted fitness for genomes
+		// calc total fitness for species
+		// calc total population fitness
+		pop.adjustFitness();
 		
+		// remove X lowest performing genomes in the entire population
+		int nrOfWorstToRemove = 0;
+		
+		pop.removeWorst(nrOfWorstToRemove);
+		
+		// delete possible empty species
+		pop.removeExtinctSpecies();
+		
+		// assign nr of offspring to each species, based on species fitness
+		pop.calcOffspring();
+		
+		// each offspring is assigned to a species, either one that already exists or a new one
+		// if one that already exists, then the id of that species is copied to a new one in the new population, to keep track of it through generations
+		// if new one, just create it with new species id
+		
+		// if a species only has 1 member, 
+		// mate with closest genome from other species OR mutate it??
 		
 		return pop;
 	}
