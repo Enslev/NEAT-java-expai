@@ -9,6 +9,8 @@ public class GeneNode {
 	public double bias;
 	public int id;
 
+	public boolean hasFinalValue = false;
+	
 	public ArrayList<GeneLink> input;
 	public ArrayList<GeneLink> output;
 	
@@ -21,17 +23,26 @@ public class GeneNode {
 		this.output = new ArrayList<GeneLink>();
 	}
 	
-	public void incValue(double x) {
+	public void addToValue(double x) {
 		value += x;
 		inputCount++;
+		
+		if (inputCount == input.size()){
+			value = activationFunction( value + bias );
+			hasFinalValue = true;
+		}
 	}
 	
-	public double calcValue() {
-		double val = value + bias;
-		return sigmoid(val);
+	// return final value and reset value to 0
+	public double getFinalValue(){
+		double finalValue = value;
+		value = 0; // important, so values dont carry over to the next calculation of the network
+		hasFinalValue = false;
+		return finalValue;
 	}
 	
-	private double sigmoid(double t) {
+	private double activationFunction(double t) {
+		// sigmoid
 		return 1/(1+Math.pow(Math.E, -t));
 	}
 

@@ -19,15 +19,15 @@ public class Demo {
 			color.add(x);
 		}
 
-		Genome gen1 = new Genome(10);	
-		Genome gen2 = new Genome(10);		
+		Genome gen1 = new Genome(10, 2);	
+		Genome gen2 = new Genome(10, 2);		
 		gen1.addLink(gen1.input.get(0), gen1.output.get(0));
 		//gen2.addLink(gen1.input.get(3), gen1.output.get(0));
 		gen1.addLink(gen1.input.get(1), gen1.output.get(1));
 		
 		gen1.links.get(1).weight = 0.5;
 
-		ArrayList<GeneNode> out = gen1.run(color);
+		ArrayList<GeneNode> out = gen1.sendThroughNetwork(color);
 
 		//System.out.println(out.get(0).value);
 		//System.out.println(out.get(1).value);

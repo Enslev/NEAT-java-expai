@@ -6,92 +6,92 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Genome {
-	public static final double DEFAULT_WEIGHT = 1;
-	public static final double DEFAULT_BIAS = 0;
+	public static final double DEFAULT_WEIGHT = 1.0;
+	public static final double DEFAULT_BIAS = 0.0;
 	
 	public ArrayList<GeneNode> input;
 	public ArrayList<GeneNode> output;
 	public ArrayList<GeneNode> hidden;
 	public ArrayList<GeneLink> links;
 	private Queue<GeneNode> queue;
-	public int fitness;
+	public double fitness;
 	
-	public Genome(int inputSize) {
+	public Genome(int inputSize, int outputSize) {
 		input = new ArrayList<GeneNode>();
 		output = new ArrayList<GeneNode>();
 		hidden = new ArrayList<GeneNode>();
 		links = new ArrayList<GeneLink>();
 		queue = new LinkedList<GeneNode>();
 		
-		fitness = 0;
+		fitness = 0.0;
 		
 		for (int i = 0; i < inputSize; i++) {
 			input.add(new GeneNode(DEFAULT_BIAS));
 		}
 		
-		// TODO: make output size a parameter
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < outputSize; i++) {
 			output.add(new GeneNode(DEFAULT_BIAS));
 		}
 		
 	}
 	
-	public ArrayList<GeneNode> run(ArrayList<Integer> color) {
+	public ArrayList<GeneNode> sendThroughNetwork(ArrayList<Integer> color) {
 		// TODO: should be more flexible, color might change
+		// assign final color values to all input nodes
 		for (int i = 0; i < input.size(); i++) {
-			input.get(i).value = color.get(i) / 255.0;
+			GeneNode inputNode = input.get(i); 
+			inputNode.value = color.get(i) / 255.0;
+			
+			inputNode.hasFinalValue = true; // not necessary, but informative
+			queue.add(inputNode);
 		}
 		
-		for (GeneNode node: input) {
-			double value = node.value;
-			for (GeneLink c: node.output) {
-				c.out.incValue(value * c.weight);
+		GeneNode node = queue.poll();
+		while (node != null) {
+			feedForward(node);
+			node = queue.poll();
+		}
+		return output;
+	}
+
+	// send the node value through all its outbound links
+	public void feedForward(GeneNode node){
+		double value = node.getFinalValue();
+		
+		for (GeneLink link : node.output) {
+			if (link.enabled) {
+				GeneNode target = link.out;
+				target.addToValue(value * link.weight);
 				
-				if (c.out.inputCount >= c.out.input.size()) {
-					queue.add(c.out);
+				if (target.hasFinalValue){
+					queue.add(target);
 				}
 			}
 		}
-		 
-		GeneNode node = queue.poll();
-		while (node != null) {
-			double value = node.calcValue();
-			for (GeneLink c: node.output) {
-				if (c.enabled) {
-					c.out.incValue(value * c.weight);
-					
-					if (c.out.inputCount >= c.out.input.size()) {
-						queue.add(node);
-					}
-				}
-			}			
-			node = queue.poll();
-		}
-		
-		return output;
 	}
 	
-	public void addLink(GeneNode n1, GeneNode n2) {
-		GeneLink link = new GeneLink(n1, n2, DEFAULT_WEIGHT);
+	public void addLink(GeneNode source, GeneNode target) {
+		GeneLink link = new GeneLink(source, target, DEFAULT_WEIGHT);
 		
 		if (connectionExists(link)) {
 			return;
 		}
 		
-		n1.output.add(link);
-		n2.input.add(link);
+		source.output.add(link);
+		target.input.add(link);
 		links.add(link);
 	}
 	
+	// can only add hidden nodes
 	public void addNode(GeneLink link) {
 		link.enabled = false;
-		GeneNode n = new GeneNode(DEFAULT_BIAS);
-		hidden.add(n);
+		GeneNode newHiddenNode = new GeneNode(DEFAULT_BIAS);
+		hidden.add(newHiddenNode);
 
-		GeneLink link1 = new GeneLink(link.in, n, DEFAULT_WEIGHT);	
-		GeneLink link2 = new GeneLink(n, link.out, DEFAULT_WEIGHT);
-		links.add(link1);
-		links.add(link2);
+		GeneLink inLink = new GeneLink(link.in, newHiddenNode, DEFAULT_WEIGHT);	
+		GeneLink outLink = new GeneLink(newHiddenNode, link.out, DEFAULT_WEIGHT);
+		links.add(inLink);
+		links.add(outLink);
 	}
 	
 	public boolean connectionExists(GeneLink testLink) {
