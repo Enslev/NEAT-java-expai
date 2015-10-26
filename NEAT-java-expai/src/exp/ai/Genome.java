@@ -156,5 +156,15 @@ public class Genome {
 		
 		return str;
 	}
+	
+	public String toStringGenotype(){
+		String str = "";
+		
+		for (GeneLink link : links){
+			str = (link.enabled) ? "" : "!";
+			str += link.innovation + "(" + link.in.id + "-" + link.out.id + ")";
+		}
+		return str;
+	}
 
 }

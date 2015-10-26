@@ -11,17 +11,23 @@ public class Demo {
 	
 	public static void main(String[] args) {
 		
-		Population pop = new Population();
+		int populationSize = 20; 
+		
+		Population pop = new Population(populationSize, true);
 		// generations
 		for (int i = 0; i < 5; i++){
-			for (Genome genome : pop.){
-				genome.sendThroughNetwork(color);
+			for (Genome genome : pop.genomes){
+				//genome.sendThroughNetwork(color);
 			}
 			pop = Algorithm.evolvePopulation(pop);
+			System.out.println("hey");
 		}
 
+		System.out.println(pop.genomes[0].toString());
+		
 	}	
 	
+	/*
 	public static double matchGenomes(Genome g1, Genome g2) {
 		ArrayList<Integer> g1Innos = g1.getSortedInnovation();
 		ArrayList<Integer> g2Innos = g2.getSortedInnovation();
@@ -63,7 +69,7 @@ public class Demo {
 		// e: Excess. d: Disjoint. w: matching. n: #of genes in larger genome.
 		return (C_1*e)/n+(C_2*d)/n+w*C_3;
 	}
-	
+	*/
 
 
 	
