@@ -3,7 +3,7 @@ package exp.ai;
 import java.util.ArrayList;
 
 public class GeneNode {
-	private static int idCount = 0;
+	//private static int idCount = 0;
 	public int inputCount;
 	public double value;
 	public double bias;
@@ -11,23 +11,22 @@ public class GeneNode {
 
 	public boolean hasFinalValue = false;
 	
-	public ArrayList<GeneLink> input;
-	public ArrayList<GeneLink> output;
+	//public ArrayList<GeneLink> input;
+	//public ArrayList<GeneLink> output;
 	
 	public GeneNode(double bias) {
-		this.id = ++GeneNode.idCount;
 		this.bias = bias;
 		this.inputCount = 0;
 		
-		this.input = new ArrayList<GeneLink>();
-		this.output = new ArrayList<GeneLink>();
+		//this.input = new ArrayList<GeneLink>();
+		//this.output = new ArrayList<GeneLink>();
 	}
 	
-	public void addToValue(double x) {
+	public void addToValue(double x, int nodeInputSize) {
 		value += x;
 		inputCount++;
 		
-		if (inputCount == input.size()){
+		if (inputCount == nodeInputSize){
 			value = activationFunction( value + bias );
 			hasFinalValue = true;
 		}
@@ -36,7 +35,7 @@ public class GeneNode {
 	// return final value and reset value to 0
 	public double getFinalValue(){
 		double finalValue = value;
-		value = 0; // important, so values dont carry over to the next calculation of the network
+		value = 0; // important, so values don't carry over to the next calculation of the network
 		hasFinalValue = false;
 		return finalValue;
 	}

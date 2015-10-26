@@ -1,9 +1,12 @@
 package exp.ai;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Population {
 	 
+	public static Genome innovationGenome;
+	
 	public Genome[] genomes;
 	
 	public Population(int popSize, boolean initialise) {
@@ -13,6 +16,14 @@ public class Population {
         	int nrInput = 5;
         	int nrOutput = 1;
                 	
+        	innovationGenome = new Genome(nrInput, nrOutput);
+        	
+        	ArrayList<GeneNode> allNodes = innovationGenome.getAllNodes();
+        	
+        	for (int i = 0; i < nrInput + nrOutput; i++){
+        		allNodes.get(i).id = i;
+        	}
+        	
             for (int i = 0; i < size(); i++) {
                 genomes[i] = new Genome(nrInput, nrOutput);
             }

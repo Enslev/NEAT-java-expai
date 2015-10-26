@@ -162,10 +162,12 @@ public class Algorithm {
 				int randomIndex = random.nextInt( availNodes.size() );
 				GeneNode randomNode = availNodes.get( randomIndex );
 				
+				// check if the innovation already exists, and assign that nr or a new one to this link
+				
 			}
 
 			
-			// check if the innovation already exists, and assign that nr or a new one to this link
+
 			// save this link to list of innovations
 			// save this link to original
 

@@ -18,8 +18,7 @@ public class Genome {
 	public ArrayList<GeneLink> links;
 	private Queue<GeneNode> queue;
 	public double fitness;
-	public double adjustedFitness;
-	
+		
 	public Genome(int inputSize, int outputSize) {
 		this.id = Genome.idCount++;
 		
@@ -30,8 +29,7 @@ public class Genome {
 		queue = new LinkedList<GeneNode>();
 		
 		fitness = 0.0;
-		adjustedFitness = 0.0;
-		
+			
 		for (int i = 0; i < inputSize; i++) {
 			input.add(new GeneNode(DEFAULT_BIAS));
 		}
@@ -66,10 +64,15 @@ public class Genome {
 	public void feedForward(GeneNode node){
 		double value = node.getFinalValue();
 		
-		for (GeneLink link : node.output) {
+		// TODO: Calling getGeneNodeLinks could slow performance too much
+		// alternative: cache results before sending anything through the network
+		for (GeneLink link : this.getGeneNodeLinks(node, "out")) {
 			if (link.enabled) {
-				GeneNode target = link.out;
-				target.addToValue(value * link.weight);
+				GeneNode target = link.target;
+				
+				// TODO: this is going to get slow really fast, having to recalculate the input size every time. Fix it!
+				int nodeInputSize = this.getGeneNodeLinks(node, "in").size();
+				target.addToValue(value * link.weight, nodeInputSize);
 				
 				if (target.hasFinalValue){
 					queue.add(target);
@@ -85,8 +88,8 @@ public class Genome {
 			return;
 		}
 		
-		source.output.add(link);
-		target.input.add(link);
+		//source.output.add(link);
+		//target.input.add(link);
 		links.add(link);
 	}
 	
@@ -96,22 +99,28 @@ public class Genome {
 		GeneNode newHiddenNode = new GeneNode(DEFAULT_BIAS);
 		hidden.add(newHiddenNode);
 
-		GeneLink inLink = new GeneLink(link.in, newHiddenNode, DEFAULT_WEIGHT);	
-		GeneLink outLink = new GeneLink(newHiddenNode, link.out, DEFAULT_WEIGHT);
+		GeneLink inLink = new GeneLink(link.source, newHiddenNode, DEFAULT_WEIGHT);	
+		GeneLink outLink = new GeneLink(newHiddenNode, link.target, DEFAULT_WEIGHT);
 		links.add(inLink);
 		links.add(outLink);
 	}
 	
 	public boolean connectionExists(GeneLink testLink) {
 		for (GeneLink existingLink: links) {
-			if (existingLink.out == testLink.out &&
-				existingLink.in == testLink.in) {
+			if (existingLink.target == testLink.target &&
+				existingLink.source == testLink.source) {
 				
 				return true;
 			}
 		}
-		
 		return false;
+	}
+	
+	public ArrayList<GeneNode> getAllNodes(){
+		ArrayList<GeneNode> all = this.input;
+		all.addAll(this.hidden);
+		all.addAll(this.output);
+		return all;
 	}
 	
 	public ArrayList<Integer> getSortedInnovation() {
@@ -122,6 +131,38 @@ public class Genome {
 		}
 		Collections.sort(list);
 		return list;
+	}
+	
+	public ArrayList<GeneLink> getGeneNodeLinks(GeneNode node, String type){
+		ArrayList<GeneLink> links = new ArrayList<GeneLink>();
+		
+		for (GeneLink link : this.links){
+			if (type.equals("in")){
+				if (link.target.id == node.id){
+					links.add(link);
+				}
+			}
+			if (type.equals("out")){
+				if (link.source.id == node.id){
+					links.add(link);
+				}
+			}
+		}
+		return links;
+	}
+	
+	public Genome copy(){
+		Genome copy;
+		
+		for (GeneNode inNode : this.input){
+			GeneNode copyNode;
+			copyNode.id = inNode.id;
+			copyNode.bias = inNode.bias;
+						
+			//copy.input.add(  );
+		}
+		
+		return copy;
 	}
 	
 	public String toString(){
@@ -146,8 +187,8 @@ public class Genome {
 		
 		for (GeneNode node : allNodes){
 			str += node.id + ": ";
-			for (GeneLink outLink : node.output){
-				GeneNode outNode = outLink.out;
+			for (GeneLink outLink : this.getGeneNodeLinks(node, "out")){
+				GeneNode outNode = outLink.target;
 				str += outNode.id + " ";
 			}
 			str += "\n";
@@ -162,7 +203,7 @@ public class Genome {
 		
 		for (GeneLink link : links){
 			str = (link.enabled) ? "" : "!";
-			str += link.innovation + "(" + link.in.id + "-" + link.out.id + ")";
+			str += link.innovation + "(" + link.source.id + "-" + link.target.id + ")";
 		}
 		return str;
 	}
